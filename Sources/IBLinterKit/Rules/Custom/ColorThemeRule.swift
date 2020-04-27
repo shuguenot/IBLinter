@@ -15,20 +15,23 @@ extension Rules {
         static let identifier = "color_theme"
         static let description = "Display error when color attribute does not correspond to a Theme file color"
 
+        private let enforceComponentTheming: Bool
         private let themeApplicationColors: [String]
         private let themeGroups: [String]
         private let themeControllers: [String]
         private let themeComponents: [String: [String]]
 
         init(context: Context) {
-            guard let inputPath = context.config.colorThemeRule?.path else {
+            guard let config = context.config.colorThemeRule else {
+                enforceComponentTheming = false
                 themeApplicationColors = []
                 themeGroups = []
                 themeControllers = []
                 themeComponents = [:]
                 return
             }
-            let path = context.workDirectory.appendingPathComponent(inputPath)
+            enforceComponentTheming = config.enforce
+            let path = context.workDirectory.appendingPathComponent(config.path)
             do {
                 let text = try String(contentsOf: path, encoding: .utf8)
                 let yaml = try Yams.load(yaml: text) as! [String: Any]
@@ -78,6 +81,34 @@ extension Rules {
             var violations = [Violation]()
             guard !themeComponents.isEmpty else {
                 return violations
+            }
+            if enforceComponentTheming {
+                if view.backgroundColor != nil {
+                    let message = "\(viewName(of: view)) backgroundColor is hard-coded"
+                    violations += [Violation(pathString: file.pathString, message: message, level: .warning)]
+                }
+                if view.tintColor != nil {
+                    let message = "\(viewName(of: view)) tintColor is hard-coded"
+                    violations += [Violation(pathString: file.pathString, message: message, level: .warning)]
+                }
+                if let view = view as? Label {
+                    if view.textColor != nil {
+                        let message = "\(viewName(of: view)) textColor is hard-coded"
+                        violations += [Violation(pathString: file.pathString, message: message, level: .warning)]
+                    }
+                }
+                if let view = view as? Switch {
+                    if view.onTintColor != nil {
+                        let message = "\(viewName(of: view)) onTintColor is hard-coded"
+                        violations += [Violation(pathString: file.pathString, message: message, level: .warning)]
+                    }
+                }
+                if let view = view as? TextView {
+                    if view.textColor != nil {
+                        let message = "\(viewName(of: view)) textColor is hard-coded"
+                        violations += [Violation(pathString: file.pathString, message: message, level: .warning)]
+                    }
+                }
             }
             if let userDefinedAttributes = view.userDefinedRuntimeAttributes {
                 for attribute in userDefinedAttributes {
