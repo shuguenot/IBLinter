@@ -40,6 +40,7 @@ public struct Rules {
             ViewAsDeviceRule.self,
             ReuseIdentifierRule.self,
             ColorResourcesRule.self,
+            ColorThemeRule.self,
             LocalizationRule.self
         ]
     }()
