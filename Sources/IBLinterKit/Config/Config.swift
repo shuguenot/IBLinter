@@ -17,6 +17,7 @@ public struct Config: Codable {
     public let useBaseClassRule: [UseBaseClassConfig]
     public let viewAsDeviceRule: ViewAsDeviceConfig?
     public let useTraitCollectionsRule: UseTraitCollectionsConfig?
+    public let localizationRule: LocalizationConfig?
     public let reporter: String
     public let disableWhileBuildingForIB: Bool
     public let ignoreCache: Bool
@@ -30,6 +31,7 @@ public struct Config: Codable {
         case useBaseClassRule = "use_base_class_rule"
         case viewAsDeviceRule = "view_as_device_rule"
         case useTraitCollectionsRule = "use_trait_collections_rule"
+        case localizationRule = "localization_rule"
         case reporter = "reporter"
         case disableWhileBuildingForIB = "disable_while_building_for_ib"
         case ignoreCache = "ignore_cache"
@@ -47,6 +49,7 @@ public struct Config: Codable {
         useBaseClassRule = []
         viewAsDeviceRule = nil
         useTraitCollectionsRule = nil
+        localizationRule = nil
         reporter = "xcode"
         disableWhileBuildingForIB = true
         ignoreCache = false
@@ -58,6 +61,7 @@ public struct Config: Codable {
          baseClassRule: [UseBaseClassConfig] = [],
          viewAsDeviceRule: ViewAsDeviceConfig? = nil,
          useTraitCollectionsRule: UseTraitCollectionsConfig? = nil,
+         localizationRule: LocalizationConfig? = nil,
          reporter: String = "xcode", disableWhileBuildingForIB: Bool = true,
          ignoreCache: Bool = false) {
         self.disabledRules = disabledRules
@@ -68,6 +72,7 @@ public struct Config: Codable {
         self.useBaseClassRule = baseClassRule
         self.useTraitCollectionsRule = useTraitCollectionsRule
         self.viewAsDeviceRule = viewAsDeviceRule
+        self.localizationRule = localizationRule
         self.reporter = reporter
         self.disableWhileBuildingForIB = disableWhileBuildingForIB
         self.ignoreCache = ignoreCache
@@ -83,6 +88,7 @@ public struct Config: Codable {
         useBaseClassRule = try container.decodeIfPresent(Optional<[UseBaseClassConfig]>.self, forKey: .useBaseClassRule)?.flatMap { $0 } ?? []
         useTraitCollectionsRule = try container.decodeIfPresent(Optional<UseTraitCollectionsConfig>.self, forKey: .useTraitCollectionsRule) ?? nil
         viewAsDeviceRule = try container.decodeIfPresent(Optional<ViewAsDeviceConfig>.self, forKey: .viewAsDeviceRule) ?? nil
+        localizationRule = try container.decodeIfPresent(Optional<LocalizationConfig>.self, forKey: .localizationRule) ?? nil
         reporter = try container.decodeIfPresent(String.self, forKey: .reporter) ?? "xcode"
         disableWhileBuildingForIB = try container.decodeIfPresent(Bool.self, forKey: .disableWhileBuildingForIB) ?? true
         ignoreCache = try container.decodeIfPresent(Bool.self, forKey: .ignoreCache) ?? false
